@@ -17,16 +17,16 @@
 
 <template>
     <el-form label-position="top">
-        <el-form-item label="woooooo">
-            <!--<el-transfer
+        <el-form-item>
+            <trans
                     filterable
                     :filter-method="filterMethod"
                     filter-placeholder="请输入"
-                    :titles="['隐藏列', '显示列']"
+                    :titles="['数据列']"
                     :props="{key: 'label', label: 'label', disabled: 'disableSelection'}"
                     v-model="selectedLabels"
                     :data="realOptions">
-            </el-transfer>-->
+            </trans>
         </el-form-item>
 
         <el-form-item>
@@ -41,8 +41,11 @@
 <script>
   // import {createHandle, hasParent} from "@/src/utils"
 
+  import Trans from "./trans";
+  import vuedraggable from 'vuedraggable';
   export default {
     name: "RxColumnSelect",
+    components: {Trans},
     props: {
       id: {
         type: String,
@@ -86,6 +89,7 @@
     methods: {
       init() {
         const columns = relax.store.get(this.storeId);
+        // console.log(columns);
         if (columns) {
           this.selectedLabels = columns;
         } else {
@@ -100,7 +104,7 @@
       },
       filterMethod(query, item) {
         return item.label.indexOf(query) > -1;
-      }
+      },
     }
   }
 </script>

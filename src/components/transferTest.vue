@@ -15,9 +15,7 @@
       return{
         tblUser: {
           loading: false,
-
           apply: [],
-
           columns: [{
             label: "用户ID",
             property: "USERID",

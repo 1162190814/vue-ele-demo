@@ -9,6 +9,7 @@ import adminLogManage from '@/components/logManage/adminLogManage'
 import userLogManage from '@/components/logManage/userLogManage'
 import sysLogManage from '@/components/logManage/sysLogManage'
 import transDialog from  '@/components/transDialog'
+import tz from '@/components/tz'
 
 Vue.use(Router)
 
@@ -56,6 +57,10 @@ let routes = [
     path: '/transDialog',
     name: 'transDialog',
     component: transDialog,
+  },{
+    path: '/tz',
+    name: 'tz',
+    component: tz,
   },
 
 ]
