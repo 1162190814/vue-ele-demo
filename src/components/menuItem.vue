@@ -6,13 +6,13 @@
             <el-submenu v-if="item.children" :index="item.name" :key="item.name"> //判断是否有子路由，有的话需要遍历子路由
                 <template slot="title">
                     <i class="fa fa-bath" aria-hidden="true"></i>
-                    <span v-if="item.meta&&item.meta.title">{{item.meta.title}}</span>
+                    <span v-if="item.meta && item.meta.title">{{item.meta.title}}</span>
                 </template>
                 <template v-for="child in item.children">
                     <router-link :to="child.path" :key="child.name">
                         <el-menu-item :index="item.path + child.path" >
                             <i class="fa fa-bath" aria-hidden="true"></i>
-                            <span v-if="child.meta&&child.meta.title" slot="title">{{child.meta.title}}</span>
+                            <span v-if="child.meta && child.meta.title" slot="title">{{child.meta.title}}</span>
                         </el-menu-item>
                     </router-link>
                 </template>

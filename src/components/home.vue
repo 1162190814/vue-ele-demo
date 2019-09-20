@@ -15,6 +15,10 @@
         }
         &-side-expanded{
             width: 200px!important;
+            .el-button{
+                border-bottom:3px solid blue !important;
+                width: 200px!important;
+            }
         }
     }
 
@@ -22,9 +26,9 @@
 <template>
     <el-container class="app">
         <el-aside :class="isCollapse ? 'app-side-collapsed' : 'app-side-expanded'">
-            <el-button @click="toggleSideBar" style="width: 64px;height: 54px"><i class="el-icon-menu"></i></el-button>
+            <el-button @click="toggleSideBar"><i class="el-icon-menu"></i></el-button>
             <el-menu :collapse="isCollapse" router>
-                <menu-item :menus="menus"></menu-item>
+                <!--<menu-item :menus="menus"></menu-item>-->
             </el-menu>
         </el-aside>
         <el-container>
@@ -50,7 +54,7 @@
     data(){
       return{
         isCollapse:false,
-        menus:this.$store.state.menu,
+        // menus:this.$router.options.routes,
       }
     },
     methods:{

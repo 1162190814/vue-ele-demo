@@ -1,11 +1,11 @@
 <style lang="scss">
 </style>
 <template>
- <div>index</div>
+ <div>logManages</div>
 </template>
 
 <script>
   export default {
-    name: "index",
+    name: "logManages",
   }
 </script>

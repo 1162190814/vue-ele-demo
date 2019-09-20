@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import menus from '../router/index'
+import { menus } from '../router/index'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state:{
-    menus:menus
+    // menus:menus
   }
 })
 
