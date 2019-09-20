@@ -39,7 +39,6 @@
 
 <script>
   // import {createHandle, hasParent} from "@/src/utils"
-
   import Trans from "./trans";
   import vuedraggable from 'vuedraggable';
   export default {
