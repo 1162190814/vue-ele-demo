@@ -1,10 +1,11 @@
 <template>
     <vuedraggable class="wrapper" v-model="list">
-        <transition-group>
-            <div v-for="item in list" :key="item" class="item">
-                <p>{{item}}</p>
-            </div>
-        </transition-group>
+            <el-checkbox
+                    class="item"
+                    :key="item"
+                    v-for="item in list">
+                <option-content :option="item">{{item}}</option-content>
+            </el-checkbox>
     </vuedraggable>
 </template>
 
@@ -20,9 +21,6 @@
       return {
         list: [1,2,34,4,54,5]
       }
-    },
-    updated() {
-      console.log(this.list)
     },
     methods: {
     }

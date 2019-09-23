@@ -53,8 +53,9 @@
   import Emitter from 'element-ui/src/mixins/emitter';
   import Locale from 'element-ui/src/mixins/locale';
   import TransferPanel from './transfer-panel.vue';
-  import RxTransferPanel from './myPanel'
   import Migrating from 'element-ui/src/mixins/migrating';
+  import ElTransferPanelDnd from "./vueDnd";
+  import RxTransferPanel from "./rxTrabsferPanel";
 
   export default {
     name: 'trans',
@@ -62,6 +63,8 @@
     mixins: [Emitter, Locale, Migrating],
 
     components: {
+      RxTransferPanel,
+      ElTransferPanelDnd,
       TransferPanel,
       ElButton,
     },

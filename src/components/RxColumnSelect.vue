@@ -1,24 +1,10 @@
-<!--
-<template>
-    <div>select</div>
-</template>
-<script>
-    export default {
-      name:'RxColumnSelect',
-    }
-</script>-->
 <style lang="scss">
-    .el-transfer{
-        .el-transfer-panel:nth-child(2){
-            display: none;
-        }
-    }
 </style>
 
 <template>
     <el-form label-position="top">
         <el-form-item>
-            <trans
+            <transfer-panel
                     filterable
                     :filter-method="filterMethod"
                     filter-placeholder="请输入"
@@ -26,7 +12,7 @@
                     :props="{key: 'label', label: 'label', disabled: 'disableSelection'}"
                     v-model="selectedLabels"
                     :data="realOptions">
-            </trans>
+            </transfer-panel>
         </el-form-item>
 
         <el-form-item>
@@ -41,9 +27,11 @@
   // import {createHandle, hasParent} from "@/src/utils"
   import Trans from "./trans";
   import vuedraggable from 'vuedraggable';
+  import PanelTest from "./panelTest";
+  import ElTransferPanel from "./transfer-panel";
   export default {
     name: "RxColumnSelect",
-    components: {Trans},
+    components: {ElTransferPanel, PanelTest, Trans},
     props: {
       id: {
         type: String,

@@ -1,3 +1,4 @@
+
 <template>
     <div class="el-transfer-panel">
         <p class="el-transfer-panel__header">
@@ -24,17 +25,22 @@
                    @click="clearQuery"
                 ></i>
             </el-input>
+
             <el-checkbox-group
                     v-model="checked"
                     v-show="!hasNoMatch && data.length > 0"
                     :class="{ 'is-filterable': filterable }"
-                    class="el-transfer-panel__list">
+                    class="el-transfer-panel__list"
+            >
                 <el-checkbox
                         class="el-transfer-panel__item"
                         :label="item[keyProp]"
                         :disabled="item[disabledProp]"
                         :key="item[keyProp]"
-                        v-for="item in filteredData">
+                        v-for="item in options"
+                        v-dragging="{ item: item, list: options}"
+                        v-model="options"
+                >
                     <option-content :option="item"></option-content>
                 </el-checkbox>
             </el-checkbox-group>
@@ -56,15 +62,18 @@
   import ElCheckbox from 'element-ui/packages/checkbox';
   import ElInput from 'element-ui/packages/input';
   import Locale from 'element-ui/src/mixins/locale';
+  import vuedraggable from 'vuedraggable';
+
 
   export default {
     mixins: [Locale],
 
-    name: 'RxTransferPanel',
+    name: 'selectColumn',
 
-    componentName: 'RxTransferPanel',
+    componentName: 'selectColumn',
 
     components: {
+      vuedraggable,
       ElCheckboxGroup,
       ElCheckbox,
       ElInput,
@@ -107,7 +116,19 @@
       format: Object,
       filterMethod: Function,
       defaultChecked: Array,
-      props: Object
+      props: Object,
+      id: {
+        type: String,
+        required: true
+      },
+      options: {
+        type: Array,
+        required: true
+      },
+      apply: {
+        type: Array,
+        required: true
+      },
     },
 
     data() {
@@ -116,7 +137,7 @@
         allChecked: false,
         query: '',
         inputHover: false,
-        checkChangeByUser: true
+        checkChangeByUser: true,
       };
     },
 
@@ -216,7 +237,6 @@
       },
 
       keyProp() {
-        console.log("key=="+this.props.key);
         return this.props.key || 'key';
       },
 
@@ -247,7 +267,17 @@
           this.query = '';
         }
       }
-    }
+    },
+    mounted () {
+      this.$dragging.$on('dragged', ({ value }) => {
+        console.log(value)
+        console.log(value.list)
+        console.log(value.otherData)
+      })
+      this.$dragging.$on('dragend', () => {
+
+      })
+    },
   };
 </script>
 

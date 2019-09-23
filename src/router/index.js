@@ -10,6 +10,9 @@ import userLogManage from '@/components/logManage/userLogManage'
 import sysLogManage from '@/components/logManage/sysLogManage'
 import transDialog from  '@/components/transDialog'
 import tz from '@/components/tz'
+import vueDndTest from '@/components/vueDndTest'
+import vueDnd from '@/components/vueDnd'
+import elChecked from '@/components/elcheck'
 
 Vue.use(Router)
 
@@ -61,6 +64,18 @@ let routes = [
     path: '/tz',
     name: 'tz',
     component: tz,
+  },{
+    path: '/vueDndTest',
+    name: 'vueDndTest',
+    component: vueDndTest,
+  },{
+    path: '/vueDnd',
+    name: 'vueDnd',
+    component: vueDnd,
+  },{
+    path: '/elChecked',
+    name: 'elChecked',
+    component: elChecked,
   },
 
 ]
