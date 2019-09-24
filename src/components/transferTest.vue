@@ -2,8 +2,8 @@
 </style>
 <template>
     <div>
-        <col-select class="colSelect" id="esmat-user-management-table" :options="tblUser.columns"
-                          :apply.sync="tblUser.apply" :title="title"></col-select>
+        <select-column class="colSelect" id="esmat-user-management-table" :options="tblUser.columns" :col="esmat-user-selection-table"
+                          :apply.sync="tblUser.apply" :title="title"></select-column>
     </div>
 </template>
 <script>

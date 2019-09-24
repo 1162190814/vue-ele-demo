@@ -21,7 +21,6 @@
                             class="el-transfer-panel__filter"
                             v-model="query"
                             placeholder="请输入"
-                            @mouseenter.native="mouseenter"
                     >
                         <i slot="prefix"
                            :class="['el-input__icon', 'el-icon-' + inputIcon]"

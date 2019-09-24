@@ -1,123 +1,72 @@
-
+<style lang="scss">
+    .colSelectForm{
+        .el-form-item:first-child .el-transfer-panel,
+        .el-form-item:nth-child(2){
+            margin-left: 25px;
+        }
+        .el-form-item:first-child .el-transfer-panel{
+            width: 500px;
+        }
+    }
+    .el-checkbox-group{
+        height: 300px;
+        overflow:auto;
+        .el-checkbox{
+            display: block;
+            padding-left: 20px;
+        }
+    }
+</style>
 <template>
-    <div class="el-transfer-panel">
-        <p class="el-transfer-panel__header">
-            <el-checkbox
-                    v-model="allChecked"
-                    @change="handleAllCheckedChange"
-                    :indeterminate="isIndeterminate">
-                {{ title }}
-                <span>{{ checkedSummary }}</span>
-            </el-checkbox>
-        </p>
+    <el-form label-position="top" class="colSelectForm">
+        <el-form-item>
+            <div class="el-transfer-panel">
+                <p class="el-transfer-panel__header">
+                    <el-checkbox @change="handleAllCheckedChange">{{title}}
+                        <span> {{checkedSummary}}</span>
+                    </el-checkbox>
+                </p>
+                <div>
+                    <el-input
+                            class="el-transfer-panel__filter"
+                            v-model="query"
+                            placeholder="请输入">
+                        <i slot="prefix"
+                           :class="['el-input__icon', 'el-icon-' + inputIcon]"
+                           @click="clearQuery"
+                        ></i>
+                    </el-input>
+                    <el-checkbox-group v-model="selectedLabels">
+                        <el-checkbox
+                                v-for="item in realOptions"
+                                :key="item.label"
+                                :label="item.label"
+                        >
+                        </el-checkbox>
+                    </el-checkbox-group>
 
-        <div :class="['el-transfer-panel__body', hasFooter ? 'is-with-footer' : '']">
-            <el-input
-                    class="el-transfer-panel__filter"
-                    v-model="query"
-                    size="small"
-                    :placeholder="placeholder"
-                    @mouseenter.native="inputHover = true"
-                    @mouseleave.native="inputHover = false"
-                    v-if="filterable">
-                <i slot="prefix"
-                   :class="['el-input__icon', 'el-icon-' + inputIcon]"
-                   @click="clearQuery"
-                ></i>
-            </el-input>
+                </div>
+            </div>
+        </el-form-item>
+        <el-form-item>
+            <el-button type="primary" @click="handleReset">重置</el-button>
+        </el-form-item>
+    </el-form>
 
-            <el-checkbox-group
-                    v-model="checked"
-                    v-show="!hasNoMatch && data.length > 0"
-                    :class="{ 'is-filterable': filterable }"
-                    class="el-transfer-panel__list"
-            >
-                <el-checkbox
-                        class="el-transfer-panel__item"
-                        :label="item[keyProp]"
-                        :disabled="item[disabledProp]"
-                        :key="item[keyProp]"
-                        v-for="item in options"
-                        v-dragging="{ item: item, list: options}"
-                        v-model="options"
-                >
-                    <option-content :option="item"></option-content>
-                </el-checkbox>
-            </el-checkbox-group>
-            <p
-                    class="el-transfer-panel__empty"
-                    v-show="hasNoMatch">{{ t('el.transfer.noMatch') }}</p>
-            <p
-                    class="el-transfer-panel__empty"
-                    v-show="data.length === 0 && !hasNoMatch">{{ t('el.transfer.noData') }}</p>
-        </div>
-        <p class="el-transfer-panel__footer" v-if="hasFooter">
-            <slot></slot>
-        </p>
-    </div>
 </template>
-
 <script>
-  import ElCheckboxGroup from 'element-ui/packages/checkbox-group';
-  import ElCheckbox from 'element-ui/packages/checkbox';
-  import ElInput from 'element-ui/packages/input';
-  import Locale from 'element-ui/src/mixins/locale';
-  import vuedraggable from 'vuedraggable';
-
-
+  // import {createHandle, hasParent} from "@/src/utils"
+  import './relax'
   export default {
-    mixins: [Locale],
-
-    name: 'selectColumn',
-
-    componentName: 'selectColumn',
-
+    name: "selectColumn",
     components: {
-      vuedraggable,
-      ElCheckboxGroup,
-      ElCheckbox,
-      ElInput,
-      OptionContent: {
-        props: {
-          option: Object
-        },
-        render(h) {
-          const getParent = vm => {
-            if (vm.$options.componentName === 'ElTransferPanel') {
-              return vm;
-            } else if (vm.$parent) {
-              return getParent(vm.$parent);
-            } else {
-              return vm;
-            }
-          };
-          const panel = getParent(this);
-          const transfer = panel.$parent || panel;
-          return panel.renderContent
-            ? panel.renderContent(h, this.option)
-            : transfer.$scopedSlots.default
-              ? transfer.$scopedSlots.default({ option: this.option })
-              : <span>{ this.option[panel.labelProp] || this.option[panel.keyProp] }</span>;
-        }
-      }
     },
-
     props: {
-      data: {
-        type: Array,
-        default() {
-          return [];
-        }
-      },
-      renderContent: Function,
-      placeholder: String,
-      title: String,
-      filterable: Boolean,
-      format: Object,
-      filterMethod: Function,
-      defaultChecked: Array,
-      props: Object,
       id: {
+        type: String,
+        required: true
+      },
+      col: {
         type: String,
         required: true
       },
@@ -129,155 +78,96 @@
         type: Array,
         required: true
       },
+      props: Object,
+      title:String,
     },
-
     data() {
       return {
-        checked: [],
-        allChecked: false,
+        realOptions: [],
+        selectedLabels: [],//选中
+        selectedColumns:[],//表格显示
+        inited: false,
         query: '',
-        inputHover: false,
-        checkChangeByUser: true,
-      };
-    },
-
-    watch: {
-      checked(val, oldVal) {
-        this.updateAllChecked();
-        if (this.checkChangeByUser) {
-          const movedKeys = val.concat(oldVal)
-            .filter(v => val.indexOf(v) === -1 || oldVal.indexOf(v) === -1);
-          this.$emit('checked-change', val, movedKeys);
-        } else {
-          this.$emit('checked-change', val);
-          this.checkChangeByUser = true;
-        }
-      },
-
-      data() {
-        const checked = [];
-        const filteredDataKeys = this.filteredData.map(item => item[this.keyProp]);
-        this.checked.forEach(item => {
-          if (filteredDataKeys.indexOf(item) > -1) {
-            checked.push(item);
-          }
-        });
-        this.checkChangeByUser = false;
-        this.checked = checked;
-      },
-
-      checkableData() {
-        this.updateAllChecked();
-      },
-
-      defaultChecked: {
-        immediate: true,
-        handler(val, oldVal) {
-          if (oldVal && val.length === oldVal.length &&
-            val.every(item => oldVal.indexOf(item) > -1)) return;
-          const checked = [];
-          const checkableDataKeys = this.checkableData.map(item => item[this.keyProp]);
-          val.forEach(item => {
-            if (checkableDataKeys.indexOf(item) > -1) {
-              checked.push(item);
-            }
-          });
-          this.checkChangeByUser = false;
-          this.checked = checked;
-        }
       }
     },
+   updated(){
 
+   },
+    mounted () {
+      // this.$dragging.$on('dragend', () => {});
+      this.init();
+
+    },
     computed: {
-      filteredData() {
-        return this.data.filter(item => {
-          if (typeof this.filterMethod === 'function') {
-            return this.filterMethod(this.query, item);
-          } else {
-            const label = item[this.labelProp] || item[this.keyProp].toString();
-            return label.toLowerCase().indexOf(this.query.toLowerCase()) > -1;
-          }
-        });
+      checkedSummary(){
+        return this.selectedLabels.length + "/" + this.realOptions.length;
       },
-
-      checkableData() {
-        return this.filteredData.filter(item => !item[this.disabledProp]);
-      },
-
-      checkedSummary() {
-        const checkedLength = this.checked.length;
-        const dataLength = this.data.length;
-        const { noChecked, hasChecked } = this.format;
-        if (noChecked && hasChecked) {
-          return checkedLength > 0
-            ? hasChecked.replace(/\${checked}/g, checkedLength).replace(/\${total}/g, dataLength)
-            : noChecked.replace(/\${total}/g, dataLength);
-        } else {
-          return `${ checkedLength }/${ dataLength }`;
-        }
-      },
-
-      isIndeterminate() {
-        const checkedLength = this.checked.length;
-        return checkedLength > 0 && checkedLength < this.checkableData.length;
-      },
-
-      hasNoMatch() {
-        return this.query.length > 0 && this.filteredData.length === 0;
-      },
-
       inputIcon() {
-        return this.query.length > 0 && this.inputHover
+        return this.query.length > 0
           ? 'circle-close'
           : 'search';
       },
-
-      labelProp() {
-        return this.props.label || 'label';
+      storeId() {
+        return "table-columns-" + this.id;
+      },
+      storeColId() {
+        return "table-columns-" + this.col;
       },
 
-      keyProp() {
-        return this.props.key || 'key';
-      },
-
-      disabledProp() {
-        return this.props.disabled || 'disabled';
-      },
-
-      hasFooter() {
-        return !!this.$slots.default;
-      }
     },
+    methods:{
+      init() {
+        const allColumns = relax.store.get(this.storeColId);
+        if(allColumns){
+          this.realOptions = allColumns;
+        }else{
+          this.realOptions =  this.options.filter(x => !x.excluded);
+        }
 
-    methods: {
-      updateAllChecked() {
-        const checkableDataKeys = this.checkableData.map(item => item[this.keyProp]);
-        this.allChecked = checkableDataKeys.length > 0 &&
-          checkableDataKeys.every(item => this.checked.indexOf(item) > -1);
+        const columns = relax.store.get(this.storeId);
+        if (columns) {
+          this.selectedLabels = columns;
+        } else {
+          this.selectedLabels = this.realOptions.filter(x => !x.hide).map(x => x.label).value();
+          // this.selectedLabels = _.chain(this.options).filter(x => !x.hide).map(x => x.label).value();
+        }
+        this.inited = true;
+      },
+      handleReset() {
+        relax.store.remove(this.storeId);
+        this.inited = false;
+        this.init();
       },
 
       handleAllCheckedChange(value) {
-        this.checked = value
-          ? this.checkableData.map(item => item[this.keyProp])
+        this.selectedLabels = value
+          ? this.realOptions.map(item => item.label)
           : [];
       },
-
       clearQuery() {
         if (this.inputIcon === 'circle-close') {
           this.query = '';
         }
       }
     },
-    mounted () {
-      this.$dragging.$on('dragged', ({ value }) => {
-        console.log(value)
-        console.log(value.list)
-        console.log(value.otherData)
-      })
-      this.$dragging.$on('dragend', () => {
+    watch:{
+      realOptions(val){
+        const vm = this;
+        relax.store.set(vm.storeColId, val);
+        this.init();
+      },
+      selectedLabels(val) {
+        const vm = this;
+        relax.store.set(vm.storeId, val);
+        vm.selectedColumns = _.filter(vm.options, x => _.some(val, y => x.label === y));
+        vm.$emit("update:apply", vm.selectedColumns);
+      },
+      query(query){
+        const vm = this;
+        vm.realOptions = _.filter(vm.options,x=>x.label.indexOf(query) > -1);
+        return vm.realOptions;
+      }
 
-      })
-    },
-  };
+    }
+  }
 </script>
-
