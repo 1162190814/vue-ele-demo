@@ -8,11 +8,9 @@ import logManages from '@/components/logManage/logManages'
 import adminLogManage from '@/components/logManage/adminLogManage'
 import userLogManage from '@/components/logManage/userLogManage'
 import sysLogManage from '@/components/logManage/sysLogManage'
-import transDialog from  '@/components/transDialog'
-import tz from '@/components/tz'
-import vueDndTest from '@/components/vueDndTest'
-import vueDnd from '@/components/vueDnd'
-import elChecked from '@/components/elcheck'
+import transfer from '@/components/transfer'
+
+
 
 Vue.use(Router)
 
@@ -57,25 +55,9 @@ let routes = [
     name: 'tran',
     component: tran,
   },{
-    path: '/transDialog',
-    name: 'transDialog',
-    component: transDialog,
-  },{
-    path: '/tz',
-    name: 'tz',
-    component: tz,
-  },{
-    path: '/vueDndTest',
-    name: 'vueDndTest',
-    component: vueDndTest,
-  },{
-    path: '/vueDnd',
-    name: 'vueDnd',
-    component: vueDnd,
-  },{
-    path: '/elChecked',
-    name: 'elChecked',
-    component: elChecked,
+    path: '/transfer',
+    name: 'transfer',
+    component: transfer,
   },
 
 ]

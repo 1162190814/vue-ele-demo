@@ -41,10 +41,10 @@
                                 v-for="item in realOptions"
                                 :key="item.label"
                                 :label="item.label"
+                                v-dragging="{item:item,list:realOptions}"
                         >
                         </el-checkbox>
                     </el-checkbox-group>
-
                 </div>
             </div>
         </el-form-item>
@@ -56,9 +56,8 @@
 </template>
 <script>
   // import {createHandle, hasParent} from "@/src/utils"
-  import './relax'
   export default {
-    name: "selectColumn",
+    name: "RxSelectColumn",
     components: {
     },
     props: {
@@ -66,7 +65,7 @@
         type: String,
         required: true
       },
-      col: {
+      allCol: {
         type: String,
         required: true
       },
@@ -79,7 +78,6 @@
         required: true
       },
       props: Object,
-      title:String,
     },
     data() {
       return {
@@ -88,15 +86,21 @@
         selectedColumns:[],//表格显示
         inited: false,
         query: '',
+        title:'数据列',
       }
     },
-   updated(){
-
-   },
     mounted () {
-      // this.$dragging.$on('dragend', () => {});
+      this.$dragging.$on('dragged', ({ value }) => {
+        const vm = this;
+        const sortColumnsLabel =[];
+        relax.store.set(vm.storeColId, value.list);
+        const sortColumns = _.filter(value.list, x => _.some(vm.selectedLabels, y => x.label === y));
+        sortColumns.forEach(function(item){
+          sortColumnsLabel.push(item.label);
+        });
+        vm.selectedLabels = sortColumnsLabel;
+      });
       this.init();
-
     },
     computed: {
       checkedSummary(){
@@ -110,29 +114,35 @@
       storeId() {
         return "table-columns-" + this.id;
       },
-      storeColId() {
-        return "table-columns-" + this.col;
-      },
-
+      storeColId(){
+        return "table-columns-" + this.allCol;
+      }
     },
     methods:{
       init() {
+        this.getRealOptions();
+        this.getSelectLabels();
+        this.inited = true;
+      },
+
+      getRealOptions(){
         const allColumns = relax.store.get(this.storeColId);
         if(allColumns){
           this.realOptions = allColumns;
         }else{
-          this.realOptions =  this.options.filter(x => !x.excluded);
+          this.realOptions = this.options.filter(x => !x.excluded);
         }
+      },
 
+      getSelectLabels(){
         const columns = relax.store.get(this.storeId);
         if (columns) {
           this.selectedLabels = columns;
         } else {
-          this.selectedLabels = this.realOptions.filter(x => !x.hide).map(x => x.label).value();
-          // this.selectedLabels = _.chain(this.options).filter(x => !x.hide).map(x => x.label).value();
+          this.selectedLabels = _.chain(this.options).filter(x => !x.hide).map(x => x.label).value();
         }
-        this.inited = true;
       },
+
       handleReset() {
         relax.store.remove(this.storeId);
         this.inited = false;
@@ -148,18 +158,13 @@
         if (this.inputIcon === 'circle-close') {
           this.query = '';
         }
-      }
+      },
     },
     watch:{
-      realOptions(val){
-        const vm = this;
-        relax.store.set(vm.storeColId, val);
-        this.init();
-      },
       selectedLabels(val) {
         const vm = this;
         relax.store.set(vm.storeId, val);
-        vm.selectedColumns = _.filter(vm.options, x => _.some(val, y => x.label === y));
+        vm.selectedColumns = _.filter(vm.realOptions, x => _.some(val, y => x.label === y));
         vm.$emit("update:apply", vm.selectedColumns);
       },
       query(query){

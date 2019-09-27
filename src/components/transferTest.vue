@@ -2,20 +2,19 @@
 </style>
 <template>
     <div>
-        <select-column class="colSelect" id="esmat-user-management-table" :options="tblUser.columns" :col="esmat-user-selection-table"
-                          :apply.sync="tblUser.apply" :title="title"></select-column>
+        <select-column class="colSelect" id="esmat-user-management-table" :options="tblUser.columns"
+                          :apply.sync="tblUser.apply" :title="title" :allCol="allCol"></select-column>
     </div>
 </template>
 <script>
-    import RxColumnSelect from './RxColumnSelect'
-    import ColSelect from "./colSelect";
     import SelectColumn from "./selectColumn";
   export default {
     name: "transferTest",
-    components:{SelectColumn, ColSelect, RxColumnSelect},
+    components:{SelectColumn},
     data(){
       return{
         title:"数据列",
+        allCol:"esmat-user-selection-table",
         tblUser: {
           loading: false,
           apply: [],
